@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631168999015",
+    "project_id": "aplicacion-bancaria-5bb9a",
+    "storage_bucket": "aplicacion-bancaria-5bb9a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631168999015:android:b6ca40c6dd3916b1cb3ec2",
+        "android_client_info": {
+          "package_name": "com.example.aplicacion_bancaria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPBkUmkIPnTIbICB2027yzUVGbsWT_dy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
