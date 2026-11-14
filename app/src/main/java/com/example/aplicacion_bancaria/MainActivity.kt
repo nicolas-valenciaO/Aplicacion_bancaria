@@ -11,7 +11,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.database
-
+import kotlin.jvm.java
+import android.content.Intent
 class MainActivity : AppCompatActivity() {
 
     // Conexión con Firebase
@@ -90,6 +91,10 @@ class MainActivity : AppCompatActivity() {
                         .addOnSuccessListener { dato ->
                             val nombre = dato.getValue(String::class.java)
                             tvEstado.text = "¡Bienvenido, $nombre!"
+
+                            val intent = Intent(this, PantallaPrincipal::class.java)
+                            intent.putExtra("nombre", nombre)
+                            startActivity(intent)
                         }
                 }
                 .addOnFailureListener {

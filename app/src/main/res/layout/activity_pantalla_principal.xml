@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/red_045"
+    tools:context=".PantallaPrincipal">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/red_043">
+
+        <TextView
+            android:id="@+id/tvNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="buenas tardes "
+            android:textColor="@color/orange_008"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="61dp"
+            tools:layout_editor_absoluteY="65dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="258dp"
+        android:layout_height="120dp"
+        android:text="Trasferir"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="294dp"
+        app:backgroundTint="@color/orange_008"
+        android:textColor="@color/red_043"/>
+
+    <Button
+        android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="258dp"
+        android:layout_height="120dp"
+        android:text="ver saldo"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="437dp"
+        app:backgroundTint="@color/orange_008"
+        android:textColor="@color/red_043"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
