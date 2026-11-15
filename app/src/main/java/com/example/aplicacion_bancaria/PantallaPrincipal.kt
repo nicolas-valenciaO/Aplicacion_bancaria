@@ -28,6 +28,13 @@ class PantallaPrincipal : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val nombre = intent.getStringExtra("nombre")
+
+        val Nombre_Usuario = intent.getStringExtra("nombre");
+        if(Nombre_Usuario != null){
+            val Mensaje_Bienvendia =findViewById< TextView>(R.id.Bienvenida)
+            Mensaje_Bienvendia.text = "Bienvenido/a $Nombre_Usuario"
+        }
+
+
     }
 }
