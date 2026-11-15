@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.database
 import kotlin.jvm.java
 import android.content.Intent
+import android.widget.LinearLayout
+
 class MainActivity : AppCompatActivity() {
 
     // Conexión con Firebase
@@ -101,5 +103,7 @@ class MainActivity : AppCompatActivity() {
                     tvEstado.text = "Correo o contraseña incorrectos"
                 }
         }
+        val layoutPrincipal = findViewById<LinearLayout>(R.id.main)
+        layoutPrincipal.setBackgroundColor(getColor(R.color.red_045))
     }
 }

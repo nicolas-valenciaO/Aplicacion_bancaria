@@ -2,7 +2,6 @@ package com.example.aplicacion_bancaria
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +21,44 @@ class PantallaPrincipal : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        setContentView(R.layout.activity_pantalla_principal)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.Inicio)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val nombre = intent.getStringExtra("nombre")
+
+        val Nombre_Usuario = intent.getStringExtra("nombre");
+        if(Nombre_Usuario != null){
+            val Mensaje_Bienvendia =findViewById< TextView>(R.id.Bienvenida)
+            Mensaje_Bienvendia.text = "Bienvenido/a \n$Nombre_Usuario"
+        }
+        val CamVerSaldo = findViewById<Button>(R.id.botonverSaldo)
+        CamVerSaldo.setOnClickListener {
+            val intent = Intent(this, VerSaldo::class.java)
+            startActivity(intent)
+            }
+        val CamTransferir = findViewById<Button>(R.id.botonTransferir)
+        CamTransferir.setOnClickListener {
+            val intent = Intent(this, Transferir::class.java)
+            startActivity(intent)
+            }
+        val CamCerrarSesion = findViewById<Button>(R.id.CerrarSesion)
+        CamCerrarSesion.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
+    override fun onResume() {
+        super.onResume()
+        val listaConsejos = listOf<String>(
+            "Nunca compartas tu informacion bancaria.",
+            "Revisa tus movimentos bancarios semanalmente.",
+            "Banco JH nunca te enviara un link para resolver algun asunto."
+        )
+        val consejo_Azar =listaConsejos.random()
+        val consejos = findViewById<TextView>(R.id.Consejos)
+        consejos.text = consejo_Azar
     }
 }
