@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                     // 2. Guardar su perfil en Realtime Database
                     val usuario = mapOf(
                         "nombre" to nombre,
-                        "correo" to correo
+                        "correo" to correo,
+                        "saldo" to 0.0
                     )
                     db.child("usuarios").child(uid).setValue(usuario)
                         .addOnSuccessListener {
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
                             val intent = Intent(this, PantallaPrincipal::class.java)
                             intent.putExtra("nombre", nombre)
+                            intent.putExtra("correo",correo)
                             startActivity(intent)
                         }
                 }

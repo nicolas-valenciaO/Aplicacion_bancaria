@@ -5,6 +5,121 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Transferir">
+    tools:context=".Transferir"
+    android:background="@color/red_045"
+
+
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Cuadroarriba"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/red_043"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="20dp"
+        >
+
+        <TextView
+            android:id="@+id/Bienvenida"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bienvendio Usuario \n¿cuanto desea transferir?"
+            android:textColor="@color/orange_008"
+            android:textSize="40sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/Cuadroarriba"
+            android:gravity="center"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/Monto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="monto"
+        android:inputType="numberDecimal"
+        android:textColorHint="@color/orange_008"
+        android:textColor="@color/orange_008"
+        app:layout_constraintTop_toBottomOf="@id/Cuadroarriba"
+        android:layout_margin="20dp"
+        />
+
+    <EditText
+        android:id="@+id/etCorreo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo(del destinatario)"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/orange_008"
+        android:textColor="@color/orange_008"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/Monto"
+        android:layout_margin="20dp"
+        />
+
+    <EditText
+        android:id="@+id/etClave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña (mínimo 6 caracteres)"
+        android:inputType="textPassword"
+        android:textColorHint="@color/orange_008"
+        android:textColor="@color/orange_008"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/etCorreo"
+        android:layout_margin="20dp"
+        />
+
+    <TextView
+        android:id="@+id/tvEstado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/etClave"
+        tools:layout_editor_absoluteX="200dp" />
+
+    <Button
+        android:id="@+id/botonTransferir"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="222dp"
+        android:layout_height="93dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="56dp"
+        android:text="Trasferir"
+        android:textColor="@color/red_043"
+        android:textSize="30dp"
+        app:backgroundTint="@color/orange_008"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etClave" />
+
+    <Button
+        android:id="@+id/btnVolver"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="176dp"
+        android:layout_height="66dp"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:text="volver"
+        android:textColor="@color/red_043"
+        android:textSize="30dp"
+        app:backgroundTint="@color/orange_008"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/botonTransferir" />
+
+    <Button
+        android:id="@+id/btnverSaldo"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="204dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:text="ver saldo"
+        android:textColor="@color/red_043"
+        android:textSize="30dp"
+        app:backgroundTint="@color/orange_008"
+        app:layout_constraintStart_toEndOf="@id/btnVolver"
+        app:layout_constraintTop_toBottomOf="@id/botonTransferir" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

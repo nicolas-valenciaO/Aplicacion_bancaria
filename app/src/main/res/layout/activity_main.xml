@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+   >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,7 +33,6 @@
                 android:inputType="textPersonName"
                 android:textColorHint="@color/orange_008"
                 android:textColor="@color/orange_008"
-
                 />
 
             <EditText

@@ -22,13 +22,15 @@
 
         <TextView
             android:id="@+id/Bienvenida"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Bienvendio \nUsuario"
             android:textColor="@color/orange_008"
             android:textSize="40sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/Cuadroarriba"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/CerrarSesion"
+            app:layout_constraintTop_toTopOf="@id/Cuadroarriba" />
             />
         <Button
             android:id="@+id/CerrarSesion"
@@ -44,7 +46,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="ELIGA UNA OPCION"
         android:textSize="40dp"
@@ -92,6 +94,8 @@
         android:textSize="50dp"
         android:textAlignment="center"
         android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

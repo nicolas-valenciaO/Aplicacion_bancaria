@@ -27,7 +27,7 @@ class PantallaPrincipal : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        val Correo = intent.getStringExtra("correo")
         val Nombre_Usuario = intent.getStringExtra("nombre");
         if(Nombre_Usuario != null){
             val Mensaje_Bienvendia =findViewById< TextView>(R.id.Bienvenida)
@@ -36,11 +36,13 @@ class PantallaPrincipal : AppCompatActivity() {
         val CamVerSaldo = findViewById<Button>(R.id.botonverSaldo)
         CamVerSaldo.setOnClickListener {
             val intent = Intent(this, VerSaldo::class.java)
+            intent.putExtra("nombre", Nombre_Usuario)
             startActivity(intent)
             }
         val CamTransferir = findViewById<Button>(R.id.botonTransferir)
         CamTransferir.setOnClickListener {
             val intent = Intent(this, Transferir::class.java)
+            intent.putExtra("nombre", Nombre_Usuario)
             startActivity(intent)
             }
         val CamCerrarSesion = findViewById<Button>(R.id.CerrarSesion)
