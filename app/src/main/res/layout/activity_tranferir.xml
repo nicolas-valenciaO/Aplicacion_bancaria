@@ -74,10 +74,11 @@
         android:id="@+id/tvEstado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"
+        android:layout_marginTop="30dp"
+        android:textSize="28sp"
         app:layout_constraintTop_toBottomOf="@id/etClave"
-        tools:layout_editor_absoluteX="200dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/botonTransferir"
@@ -91,7 +92,7 @@
         android:textSize="30dp"
         app:backgroundTint="@color/orange_008"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etClave" />
+        app:layout_constraintTop_toBottomOf="@id/tvEstado" />
 
     <Button
         android:id="@+id/btnVolver"
