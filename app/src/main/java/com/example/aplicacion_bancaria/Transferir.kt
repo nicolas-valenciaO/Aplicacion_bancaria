@@ -11,7 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
+import com.google.firebase.database.ServerValue
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
@@ -189,86 +189,22 @@ class Transferir : AppCompatActivity() {
                                     }
 
                                     // 9. Obtener saldo del destinatario
-                                    val refDestinoSaldo = db.child("usuarios")
-                                        .child(uidDestino)
-                                        .child("saldo")
-
-                                    Log.d(
-                                        "TRANSFERENCIA",
-                                        "Ruta destino: $refDestinoSaldo"
+                                    val cambios = mapOf<String, Any>(
+                                        "usuarios/$uidOrigen/saldo" to ServerValue.increment(-monto),
+                                        "usuarios/$uidDestino/saldo" to ServerValue.increment(+monto)
                                     )
-                                    Log.d("TRANSFERENCIA", "Usuario autenticado: ${auth.currentUser != null}")
-                                    Log.d("TRANSFERENCIA", "UID autenticado: ${auth.currentUser?.uid}")
-                                    Log.d("TRANSFERENCIA", "Base de datos: ${db}")
 
-                                    refDestinoSaldo.get()
-                                        .addOnSuccessListener saldoDestinoOk@{ snapDestino ->
-                                            Log.d("TRANSFERENCIA", "UID destino: $uidDestino")
-                                            Log.d("TRANSFERENCIA", "Ruta destino: $refDestinoSaldo")
-                                            Log.d("TRANSFERENCIA", "Existe el saldo: ${snapDestino.exists()}")
-                                            Log.d("TRANSFERENCIA", "Valor recibido: ${snapDestino.value}")
-
-                                            val saldoDestino =
-                                                (snapDestino.value as? Number)?.toDouble()
-
-                                            if (saldoDestino == null) {
-                                                CamEstado.text =
-                                                    "No se encontró el saldo del destinatario"
-                                                return@saldoDestinoOk
-                                            }
-
-                                            Log.d(
-                                                "TRANSFERENCIA",
-                                                "UID destino: $uidDestino"
-                                            )
-
-                                            Log.d(
-                                                "TRANSFERENCIA",
-                                                "Saldo destino: ${snapDestino.value}"
-                                            )
-
-                                            // 10. Calcular nuevos saldos
-                                            val nuevoSaldoOrigen =
-                                                saldoOrigen - monto
-
-                                            val nuevoSaldoDestino =
-                                                saldoDestino + monto
-
-                                            // 11. Actualizar ambos usuarios
-                                            val cambios = mapOf(
-                                                "usuarios/$uidOrigen/saldo" to nuevoSaldoOrigen,
-                                                "usuarios/$uidDestino/saldo" to nuevoSaldoDestino
-                                            )
-
-                                            db.updateChildren(cambios)
-                                                .addOnSuccessListener {
-                                                    CamEstado.text =
-                                                        "¡Transferencia exitosa!"
-
-                                                    Monto.text.clear()
-                                                    CorreoDestino.text.clear()
-                                                    clave.text.clear()
-                                                }
-                                                .addOnFailureListener { error ->
-                                                    CamEstado.text =
-                                                        "Error al actualizar los saldos"
-
-                                                    Log.e(
-                                                        "TRANSFERENCIA",
-                                                        "Error actualizando saldos",
-                                                        error
-                                                    )
-                                                }
+                                    db.updateChildren(cambios)
+                                        .addOnSuccessListener {
+                                            val nuevoSaldo = saldoOrigen - monto
+                                            CamEstado.text = "¡Transferencia exitosa!\nNuevo saldo: $nuevoSaldo"
+                                            Monto.text.clear()
+                                            CorreoDestino.text.clear()
+                                            clave.text.clear()
                                         }
                                         .addOnFailureListener { error ->
-                                            CamEstado.text =
-                                                "Error al consultar saldo del destinatario"
-
-                                            Log.e(
-                                                "TRANSFERENCIA",
-                                                "Error consultando saldo destino",
-                                                error
-                                            )
+                                            CamEstado.text = "Error al transferir: ${error.message}"
+                                            Log.e("TRANSFERENCIA", "Error actualizando saldos", error)
                                         }
                                 }
                                 .addOnFailureListener { error ->
