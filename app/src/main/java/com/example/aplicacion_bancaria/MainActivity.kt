@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
                     db.child("usuarios").child(uid).setValue(usuario)
                         .addOnSuccessListener {
                             tvEstado.text = "Usuario registrado: $nombre"
+                            db.child("directorioUsuarios").child(uid)
+                                .setValue(mapOf("correo" to correo.lowercase()))
                         }
                         .addOnFailureListener { e ->
                             tvEstado.text = "Error al guardar: ${e.message}"
