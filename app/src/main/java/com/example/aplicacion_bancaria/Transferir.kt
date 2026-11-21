@@ -43,7 +43,7 @@ class Transferir : AppCompatActivity() {
         if (Nombre_Usuario != null) {
             val Mensaje_Bienvendia = findViewById<TextView>(R.id.Bienvenida)
             Mensaje_Bienvendia.text =
-                "Bienvenido/a \n$Nombre_Usuario \n ¿cuanto desea transferir?"
+                "Bienvenido/a $Nombre_Usuario \n ¿cuanto desea transferir?"
         }
 
         val CamVerSaldo = findViewById<Button>(R.id.btnverSaldo)
