@@ -1,5 +1,7 @@
+
 package com.example.aplicacion_bancaria
 
+import android.util.Log
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -9,15 +11,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.database
-import kotlin.jvm.java
 import com.google.firebase.auth.EmailAuthProvider
-import kotlinx.serialization.descriptors.buildSerialDescriptor
-
+import com.google.firebase.database.database
 
 class Transferir : AppCompatActivity() {
+
     private val auth = FirebaseAuth.getInstance()
     private val db = Firebase.database.reference
 
@@ -25,132 +26,282 @@ class Transferir : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_tranferir)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
             insets
         }
 
+        val Nombre_Usuario = intent.getStringExtra("nombre")
 
-        val Nombre_Usuario = intent.getStringExtra("nombre");
-        if(Nombre_Usuario != null){
-            val Mensaje_Bienvendia =findViewById< TextView>(R.id.Bienvenida)
-            Mensaje_Bienvendia.text = "Bienvenido/a \n$Nombre_Usuario \n ¿cuanto desea transferir?"
+        if (Nombre_Usuario != null) {
+            val Mensaje_Bienvendia = findViewById<TextView>(R.id.Bienvenida)
+            Mensaje_Bienvendia.text =
+                "Bienvenido/a \n$Nombre_Usuario \n ¿cuanto desea transferir?"
         }
+
         val CamVerSaldo = findViewById<Button>(R.id.btnverSaldo)
+
         CamVerSaldo.setOnClickListener {
             val intent = Intent(this, VerSaldo::class.java)
             startActivity(intent)
         }
+
         val CamPantallaInicio = findViewById<Button>(R.id.btnVolver)
+
         CamPantallaInicio.setOnClickListener {
             val intent = Intent(this, PantallaPrincipal::class.java)
             startActivity(intent)
         }
-        val CamEstado = findViewById< TextView>(R.id.tvEstado)
+
+        val CamEstado = findViewById<TextView>(R.id.tvEstado)
         val CamTransferir = findViewById<Button>(R.id.botonTransferir)
         val Monto = findViewById<EditText>(R.id.Monto)
         val CorreoDestino = findViewById<EditText>(R.id.etCorreo)
         val clave = findViewById<EditText>(R.id.etClave)
 
         CamTransferir.setOnClickListener {
+
             val montoTexto = Monto.text.toString().trim()
-            val correoTexto = CorreoDestino.text.toString().trim()
+            val correoTexto = CorreoDestino.text.toString().trim().lowercase()
             val claveTexto = clave.text.toString()
-            if (montoTexto.isEmpty() || correoTexto.isEmpty() || claveTexto.length < 6) {
-                CamEstado.text = "Llena todos los campos (clave mínimo 6)"
+
+            // 1. Validar campos
+            if (montoTexto.isEmpty() ||
+                correoTexto.isEmpty() ||
+                claveTexto.isEmpty()
+            ) {
+                CamEstado.text = "Llena todos los campos"
                 return@setOnClickListener
             }
+
+            // 2. Validar monto
             val monto = montoTexto.toDoubleOrNull()
-            if (monto == null || monto <= 0) {
+
+            if (monto == null || !monto.isFinite() || monto <= 0) {
                 CamEstado.text = "Ingresa un monto válido"
                 return@setOnClickListener
             }
+
+            // 3. Obtener usuario que envía
             val usuario = auth.currentUser
-            if (usuario != null && usuario.email != null) {
-                val credencial = EmailAuthProvider.getCredential(
-                    usuario.email!!,
-                    claveTexto
-                )
-                usuario.reauthenticate(credencial)
-                    .addOnSuccessListener {
 
-                        CamEstado.text = "Contraseña correcta"
-                    }
-                    .addOnFailureListener {
-                        CamEstado.text = "Contraseña incorrecta"
-                    }
+            if (usuario == null || usuario.email == null) {
+                CamEstado.text = "Inicia sesión nuevamente"
+                return@setOnClickListener
             }
-            auth.fetchSignInMethodsForEmail(correoTexto)
-                .addOnSuccessListener { resultado ->
-                    val existe = !resultado.signInMethods.isNullOrEmpty()
-                    if (!existe) {
-                        CamEstado.text = "El correo no está registrado"
-                    }
-                }
-                .addOnFailureListener {
-                    CamEstado.text = "Error al verificar el correo"
-                }
 
-                val uid = usuario?.uid
-                if (uid != null) {
-                    val refOrigenSaldo = db.child("usuarios").child(uid).child("saldo")
-                    refOrigenSaldo.get().addOnSuccessListener { snapOrigen ->
-                        val saldoOrigen = snapOrigen.getValue(Double::class.java) ?: 0.0
-                        if (saldoOrigen < monto) {
-                            CamEstado.text = "Saldo insuficiente"
-                            return@addOnSuccessListener
+            val uidOrigen = usuario.uid
+
+            // DIAGNÓSTICO 1: UID autenticado
+            Log.d("TRANSFERENCIA", "UID autenticado: $uidOrigen")
+
+            // 4. Verificar contraseña
+            val credencial = EmailAuthProvider.getCredential(
+                usuario.email!!,
+                claveTexto
+            )
+
+            usuario.reauthenticate(credencial)
+                .addOnSuccessListener {
+
+                    CamEstado.text = "Contraseña correcta"
+
+                    // 5. Buscar correo del destinatario
+                    val refUsuarios = db.child("directorioUsuarios")
+
+                    refUsuarios.orderByChild("correo")
+                        .equalTo(correoTexto)
+                        .limitToFirst(2)
+                        .get()
+                        .addOnSuccessListener busquedaDestino@{ snapshot ->
+
+                            if (!snapshot.exists()) {
+                                CamEstado.text = "El destinatario no existe"
+                                return@busquedaDestino
+                            }
+
+                            val usuariosEncontrados = snapshot.children.toList()
+
+                            if (usuariosEncontrados.size > 1) {
+                                CamEstado.text = "El correo está duplicado"
+                                return@busquedaDestino
+                            }
+
+                            // 6. Obtener UID del destinatario
+                            val usuarioDestino = usuariosEncontrados.first()
+                            val uidDestino = usuarioDestino.key
+
+                            if (uidDestino == null) {
+                                CamEstado.text = "No se encontró el UID del destinatario"
+                                return@busquedaDestino
+                            }
+
+                            if (uidOrigen == uidDestino) {
+                                CamEstado.text =
+                                    "No puedes transferirte a tu misma cuenta"
+                                return@busquedaDestino
+                            }
+
+                            // 7. Obtener saldo del remitente
+                            val refOrigenSaldo = db.child("usuarios")
+                                .child(uidOrigen)
+                                .child("saldo")
+
+                            // DIAGNÓSTICO 2: ruta consultada
+                            Log.d(
+                                "TRANSFERENCIA",
+                                "Ruta origen: $refOrigenSaldo"
+                            )
+
+                            refOrigenSaldo.get()
+                                .addOnSuccessListener saldoOrigenOk@{ snapOrigen ->
+
+                                    // DIAGNÓSTICO 3: datos recibidos
+                                    Log.d(
+                                        "TRANSFERENCIA",
+                                        "UID origen: $uidOrigen"
+                                    )
+
+                                    Log.d(
+                                        "TRANSFERENCIA",
+                                        "Saldo encontrado: ${snapOrigen.value}"
+                                    )
+
+                                    val saldoOrigen =
+                                        (snapOrigen.value as? Number)?.toDouble()
+
+                                    if (saldoOrigen == null) {
+                                        CamEstado.text = "No se encontró tu saldo"
+                                        return@saldoOrigenOk
+                                    }
+
+                                    // 8. Verificar saldo suficiente
+                                    if (saldoOrigen < monto) {
+                                        CamEstado.text = "Saldo insuficiente"
+                                        return@saldoOrigenOk
+                                    }
+
+                                    // 9. Obtener saldo del destinatario
+                                    val refDestinoSaldo = db.child("usuarios")
+                                        .child(uidDestino)
+                                        .child("saldo")
+
+                                    Log.d(
+                                        "TRANSFERENCIA",
+                                        "Ruta destino: $refDestinoSaldo"
+                                    )
+                                    Log.d("TRANSFERENCIA", "Usuario autenticado: ${auth.currentUser != null}")
+                                    Log.d("TRANSFERENCIA", "UID autenticado: ${auth.currentUser?.uid}")
+                                    Log.d("TRANSFERENCIA", "Base de datos: ${db}")
+
+                                    refDestinoSaldo.get()
+                                        .addOnSuccessListener saldoDestinoOk@{ snapDestino ->
+                                            Log.d("TRANSFERENCIA", "UID destino: $uidDestino")
+                                            Log.d("TRANSFERENCIA", "Ruta destino: $refDestinoSaldo")
+                                            Log.d("TRANSFERENCIA", "Existe el saldo: ${snapDestino.exists()}")
+                                            Log.d("TRANSFERENCIA", "Valor recibido: ${snapDestino.value}")
+
+                                            val saldoDestino =
+                                                (snapDestino.value as? Number)?.toDouble()
+
+                                            if (saldoDestino == null) {
+                                                CamEstado.text =
+                                                    "No se encontró el saldo del destinatario"
+                                                return@saldoDestinoOk
+                                            }
+
+                                            Log.d(
+                                                "TRANSFERENCIA",
+                                                "UID destino: $uidDestino"
+                                            )
+
+                                            Log.d(
+                                                "TRANSFERENCIA",
+                                                "Saldo destino: ${snapDestino.value}"
+                                            )
+
+                                            // 10. Calcular nuevos saldos
+                                            val nuevoSaldoOrigen =
+                                                saldoOrigen - monto
+
+                                            val nuevoSaldoDestino =
+                                                saldoDestino + monto
+
+                                            // 11. Actualizar ambos usuarios
+                                            val cambios = mapOf(
+                                                "usuarios/$uidOrigen/saldo" to nuevoSaldoOrigen,
+                                                "usuarios/$uidDestino/saldo" to nuevoSaldoDestino
+                                            )
+
+                                            db.updateChildren(cambios)
+                                                .addOnSuccessListener {
+                                                    CamEstado.text =
+                                                        "¡Transferencia exitosa!"
+
+                                                    Monto.text.clear()
+                                                    CorreoDestino.text.clear()
+                                                    clave.text.clear()
+                                                }
+                                                .addOnFailureListener { error ->
+                                                    CamEstado.text =
+                                                        "Error al actualizar los saldos"
+
+                                                    Log.e(
+                                                        "TRANSFERENCIA",
+                                                        "Error actualizando saldos",
+                                                        error
+                                                    )
+                                                }
+                                        }
+                                        .addOnFailureListener { error ->
+                                            CamEstado.text =
+                                                "Error al consultar saldo del destinatario"
+
+                                            Log.e(
+                                                "TRANSFERENCIA",
+                                                "Error consultando saldo destino",
+                                                error
+                                            )
+                                        }
+                                }
+                                .addOnFailureListener { error ->
+                                    CamEstado.text =
+                                        "Error al consultar tu saldo: ${error.message}"
+
+                                    Log.e(
+                                        "TRANSFERENCIA",
+                                        "Error al consultar saldo del remitente",
+                                        error
+                                    )
+                                }
                         }
+                        .addOnFailureListener { error ->
+                            CamEstado.text =
+                                "Error al buscar destinatario: ${error.message}"
 
-                        val refUsuarios = db.child("usuarios")
-                        refUsuarios.orderByChild("correo").equalTo(correoTexto).get()
-                            .addOnSuccessListener { snapDestinos ->
-                                if (!snapDestinos.exists()) {
-                                    CamEstado.text = "El correo destino no existe"
-                                    return@addOnSuccessListener
-                                }
-
-                                val usuarioDestino = snapDestinos.children.firstOrNull()
-                                val uidDestino = usuarioDestino?.key
-                                if (usuarioDestino == null || uidDestino == null) {
-                                    CamEstado.text = "No se encontró el usuario destino"
-                                    return@addOnSuccessListener
-                                }
-
-                                if (uidDestino == uid) {
-                                    CamEstado.text = "No puedes transferirte a tu misma cuenta"
-                                    return@addOnSuccessListener
-                                }
-
-                                val saldoDestino = usuarioDestino.child("saldo").getValue(Double::class.java) ?: 0.0
-
-                                // 1. Descontar al remitente
-                                refOrigenSaldo.setValue(saldoOrigen - monto)
-                                    .addOnSuccessListener {
-                                        // 2. Sumar al destinatario
-                                        val cambiosDestino = mapOf(
-                                            "saldo" to (saldoDestino + monto)
-                                        )
-                                        refUsuarios.child(uidDestino).updateChildren(cambiosDestino)
-                                            .addOnSuccessListener {
-                                                CamEstado.text = "Transacción exitosa"
-                                            }
-                                            .addOnFailureListener {
-                                                CamEstado.text = "Error al sumar al destinatario"
-                                            }
-                                    }
-                                    .addOnFailureListener {
-                                        CamEstado.text = "Error al descontar tu saldo"
-                                    }
-                            }
-                            .addOnFailureListener {
-                                CamEstado.text = "Error al buscar el destinatario"
-                            }
-                    }.addOnFailureListener {
-                        CamEstado.text = "Error al consultar tu saldo"
-                    }
+                            Log.e(
+                                "TRANSFERENCIA",
+                                "Error al buscar destinatario",
+                                error
+                            )
+                        }
                 }
+                .addOnFailureListener { error ->
+                    CamEstado.text = "Contraseña incorrecta"
 
+                    Log.e(
+                        "TRANSFERENCIA",
+                        "Error al verificar contraseña",
+                        error
+                    )
+                }
         }
     }
 }
