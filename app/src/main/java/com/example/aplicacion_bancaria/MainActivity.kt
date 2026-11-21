@@ -11,6 +11,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.database
+import kotlin.jvm.java
+import android.content.Intent
+import android.widget.LinearLayout
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                     // 2. Guardar su perfil en Realtime Database
                     val usuario = mapOf(
                         "nombre" to nombre,
-                        "correo" to correo
+                        "correo" to correo,
+                        "saldo" to 0.0
                     )
                     db.child("usuarios").child(uid).setValue(usuario)
                         .addOnSuccessListener {
@@ -90,11 +94,18 @@ class MainActivity : AppCompatActivity() {
                         .addOnSuccessListener { dato ->
                             val nombre = dato.getValue(String::class.java)
                             tvEstado.text = "¡Bienvenido, $nombre!"
+
+                            val intent = Intent(this, PantallaPrincipal::class.java)
+                            intent.putExtra("nombre", nombre)
+                            intent.putExtra("correo",correo)
+                            startActivity(intent)
                         }
                 }
                 .addOnFailureListener {
                     tvEstado.text = "Correo o contraseña incorrectos"
                 }
         }
+        val layoutPrincipal = findViewById<LinearLayout>(R.id.main)
+        layoutPrincipal.setBackgroundColor(getColor(R.color.red_045))
     }
 }
