@@ -1,10 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainVerSaldo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/red_045"
     tools:context=".VerSaldo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Cuadroarriba"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/red_043"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/Bienvenida"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="bienvenido usuario"
+            android:textColor="@color/orange_008"
+            android:textSize="40sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/CuadroSaldo"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/amber_008"
+            android:padding="5dp"
+            app:layout_constraintTop_toBottomOf="@id/Bienvenida"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/mostrarsaldo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Consultando saldo..."
+                android:textColor="@color/red_043"
+                android:textSize="22sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvEligeOpcion"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:text="ELIGA UNA OPCION"
+        android:textColor="@color/orange_008"
+        android:textSize="40dp"
+        app:layout_constraintTop_toBottomOf="@id/Cuadroarriba"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/botonTransferirdesdesaldo"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="258dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="24dp"
+        android:text="Transferir"
+        android:textColor="@color/red_043"
+        android:textSize="30dp"
+        app:backgroundTint="@color/orange_008"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEligeOpcion" />
+
+    <Button
+        android:id="@+id/botonverIniciodesdesaldo"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="258dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="24dp"
+        android:text="Volver al inicio"
+        android:textColor="@color/red_043"
+        android:textSize="30dp"
+        app:backgroundTint="@color/orange_008"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/botonTransferirdesdesaldo" />
+
+    <TextView
+        android:id="@+id/Consejos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/botonverIniciodesdesaldo"
+        android:backgroundTint="@color/red_043"
+        android:textColor="@color/orange_008"
+        android:text="Consejo"
+        android:textSize="40sp"
+        android:textAlignment="center"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
