@@ -50,6 +50,7 @@ class Transferir : AppCompatActivity() {
 
         CamVerSaldo.setOnClickListener {
             val intent = Intent(this, VerSaldo::class.java)
+            intent.putExtra("nombre", Nombre_Usuario)
             startActivity(intent)
         }
 
@@ -57,6 +58,7 @@ class Transferir : AppCompatActivity() {
 
         CamPantallaInicio.setOnClickListener {
             val intent = Intent(this, PantallaPrincipal::class.java)
+            intent.putExtra("nombre", Nombre_Usuario)
             startActivity(intent)
         }
 
